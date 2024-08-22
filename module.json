@@ -6,19 +6,25 @@
   "library": "false",
   "manifestPlusVersion": "1.2.0",
   "compatibility": {
-    "minimum": 10,
-    "verified": 10,
+    "minimum": 11,
+    "verified": 11,
     "maximum": 11
   },
   "authors": [
     {
-      "name": "The League of Extraordinary FVTT Developers",
-      "url": "https://github.com/League-of-Foundry-Developers",
-      "discord": "discordID#0001"
+      "name": "Eric Johnson",
+      "url": "https://github.com/ericartjohnson"
     }
   ],
   "relationships": {
-    "systems": [],
+    "systems": [{
+      "id": "foundry-pf2e",
+      "type": "system",
+      "manifest": "https://github.com/foundryvtt/pf2e/releases/download/5.16.1/system.json",
+      "compatibility": {
+        "verified": "5.16.1"
+      }
+    }],
     "requires": []
   },
   "esmodules": [
@@ -45,7 +51,7 @@
   "media": [
     {
       "type": "icon",
-      "url": "https://avatars2.githubusercontent.com/u/71292812?s=400&u=ccdb4eeb7abf551ca8f314e5a9bfd0479a4d3d41&v=4"
+      "url": "https://avatars.githubusercontent.com/u/1849983?v=4"
     }
   ]
 }
