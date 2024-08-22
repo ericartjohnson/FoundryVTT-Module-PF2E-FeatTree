@@ -1,7 +1,7 @@
 {
-  "id": "module",
-  "title": "New Module",
-  "description": "",
+  "id": "pf2e-feattree",
+  "title": "Feat Tree",
+  "description": "Shows PF2e feats in a tree format",
   "version": "#{VERSION}#",
   "library": "false",
   "manifestPlusVersion": "1.2.0",
