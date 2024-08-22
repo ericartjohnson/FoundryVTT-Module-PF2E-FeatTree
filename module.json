@@ -18,7 +18,7 @@
   ],
   "relationships": {
     "systems": [{
-      "id": "foundry-pf2e",
+      "id": "pf2e",
       "type": "system",
       "manifest": "https://github.com/foundryvtt/pf2e/releases/download/5.16.1/system.json",
       "compatibility": {
