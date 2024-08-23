@@ -1,7 +1,11 @@
-Hooks.on("renderCharacterSheetPF2e", (param1, param2, param3, param4) => {
-    console.log(param1, param2, param3, param4);
-    let feattree = new FeatTreeApplication();
-    feattree.render();
+Hooks.on("renderCharacterSheetPF2e", (sheet, html, actor) => {
+    console.log(sheet, html, actor);
+    html.find(".tab.feats")
+        .append('<button class="feattree"><img src="modules/pf2e-feattree/imgs/featree_clean.svg"/></button>');
+    html.find(".tab.feats button.feattree").click((e) => {
+        let feattree = new FeatTreeApplication();
+        feattree.render(true);
+    });
 });
 
 class FeatTreeApplication extends Application {
