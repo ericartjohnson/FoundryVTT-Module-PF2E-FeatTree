@@ -1,6 +1,8 @@
 button.feattree {
     position: absolute;
     bottom: 0;
+    right: 0;
+    left: 0;
     padding: 0px;
     margin: 0;
     border: 0;
@@ -22,9 +24,13 @@ button.feattree::before {
     -webkit-mask-image: url(/modules/pf2e-feattree/imgs/feattree_clean.svg);
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: 40px;
-    -webkit-mask-position: center 5px;
+    -webkit-mask-position: center 8px;
     mask-image: url(/modules/pf2e-feattree/imgs/feattree_clean.svg);
     mask-repeat: no-repeat;
     mask-size: 40px;
-    mask-position: center 5px;
+    mask-position: center 8px;
+}
+
+.tab.feats .sheet-content{
+    padding-bottom: 50px;
 }
