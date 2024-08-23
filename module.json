@@ -33,6 +33,7 @@
   "scripts": [
   ],
   "styles": [
+    "styles/module.css"
   ],
   "languages": [
     {
