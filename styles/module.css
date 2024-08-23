@@ -8,14 +8,7 @@ button.feattree {
     height: 50px;
     align-items: center;
     background-color: #445566;
-    -webkit-mask-image: url(modules/pf2e-feattree/imgs/feattree_clean.svg);
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 40px;
-    -webkit-mask-position: center 5px;
-    mask-image: url(modules/pf2e-feattree/imgs/feattree_clean.svg);
-    mask-repeat: no-repeat;
-    mask-size: 40px;
-    mask-position: center 5px;
+    
 }
 
 button.feattree::before {
@@ -25,5 +18,13 @@ button.feattree::before {
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: gray;
+    background-color: white;
+    -webkit-mask-image: url(/modules/pf2e-feattree/imgs/feattree_clean.svg);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 40px;
+    -webkit-mask-position: center 5px;
+    mask-image: url(/modules/pf2e-feattree/imgs/feattree_clean.svg);
+    mask-repeat: no-repeat;
+    mask-size: 40px;
+    mask-position: center 5px;
 }
