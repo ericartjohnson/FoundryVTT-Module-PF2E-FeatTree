@@ -3,14 +3,16 @@ Hooks.on("renderCharacterSheetPF2e", (sheet, html, actor) => {
     html.find(".tab.feats")
         .append('<button class="feattree"></button>');
     html.find(".tab.feats button.feattree").click((e) => {
-        let feattree = new FeatTreeApplication();
+        let feattree = new FeatTreeApplication(actor);
         feattree.render(true);
     });
 });
 
 class FeatTreeApplication extends Application {
-    constructor(options = {}) {
+    _actor;
+    constructor(actor, options = {}) {
         super(options);
+        this._actor = actor;
     }
 
     get title() {
@@ -28,6 +30,12 @@ class FeatTreeApplication extends Application {
             width: 800,
             height: 400,
             resizable: true
+        }
+    }
+
+    getData() {
+        return {
+            actor: this._actor
         }
     }
 }
