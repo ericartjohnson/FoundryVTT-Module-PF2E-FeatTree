@@ -32,5 +32,5 @@ button.feattree::before {
 }
 
 .tab.feats{
-    padding-bottom: 50px;
+    padding-bottom: 50px !important;
 }
