@@ -21,11 +21,11 @@ button.feattree::before {
     left: 0;
     right: 0;
     background-color: white;
-    -webkit-mask-image: url(/modules/pf2e-feattree/imgs/feattree_clean.svg);
+    -webkit-mask-image: url(/modules/pf2e-feattree-local/imgs/feattree_clean.svg);
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: 40px;
     -webkit-mask-position: center 8px;
-    mask-image: url(/modules/pf2e-feattree/imgs/feattree_clean.svg);
+    mask-image: url(/modules/pf2e-feattree-local/imgs/feattree_clean.svg);
     mask-repeat: no-repeat;
     mask-size: 40px;
     mask-position: center 8px;
@@ -33,4 +33,25 @@ button.feattree::before {
 
 .tab.feats{
     padding-bottom: 50px !important;
+}
+
+#feattree.app {
+    margin: 0;
+}
+
+/* #feattree.app header {
+    display: none;
+} */
+
+#feattree.app .window-content {
+    padding: 0;
+    overflow: hidden;
+}
+
+#feattree.app #feattree-close-button {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    right: 5px;
+    top: 5px;
 }

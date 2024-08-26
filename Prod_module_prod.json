@@ -1,8 +1,8 @@
 {
-  "id": "pf2e-feattree-local",
-  "title": "Feat Tree Local",
+  "id": "pf2e-feattree",
+  "title": "Feat Tree",
   "description": "Shows PF2e feats in a tree format",
-  "version": "0.0.16",
+  "version": "#{VERSION}#",
   "library": "false",
   "manifestPlusVersion": "1.2.0",
   "compatibility": {
@@ -40,6 +40,17 @@
       "lang": "en",
       "name": "English",
       "path": "languages/en.json"
+    }
+  ],
+  "url": "#{URL}#",
+  "manifest": "#{MANIFEST}#",
+  "download": "#{DOWNLOAD}#",
+  "license": "LICENSE",
+  "readme": "README.md",
+  "media": [
+    {
+      "type": "icon",
+      "url": "https://avatars.githubusercontent.com/u/1849983?v=4"
     }
   ]
 }
