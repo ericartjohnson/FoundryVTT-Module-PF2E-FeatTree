@@ -2,7 +2,7 @@
   "name": "foundryvtt-module-pf2e-feattree",
   "version": "1.0.0",
   "description": "![](https://img.shields.io/badge/Foundry-v10-informational)\r <!--- Downloads @ Latest Badge -->\r <!--- replace <user>/<repo> with your username/repository -->\r <!--- ![Latest Release Download Count](https://img.shields.io/github/downloads/<user>/<repo>/latest/module.zip) -->",
-  "main": "scripts/module.js",
+  "main": "scripts/module.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,9 +17,11 @@
   },
   "homepage": "https://github.com/ericartjohnson/FoundryVTT-Module-PF2E-FeatTree#readme",
   "dependencies": {
-    "@pixi/ui": "^1.1.5"
+    "@pixi/ui": "^2.1.5",
+    "pixi.js": "^8.3.4"
   },
   "devDependencies": {
-    "parcel": "^2.12.0"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   }
 }
