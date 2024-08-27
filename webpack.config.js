@@ -3,10 +3,11 @@ const path = require('path');
 module.exports = {
   watch: true,
   devtool: "source-map",
-  entry: './src/module.js',
+  entry: './src/feattree.js',
   output: {
-    filename: 'module.mjs',
+    filename: 'feattree.mjs',
     path: path.resolve(__dirname, 'scripts'),
+    publicPath: '/modules/pf2e-feattree-local/scripts/'
   },
   mode: 'development'
 };
