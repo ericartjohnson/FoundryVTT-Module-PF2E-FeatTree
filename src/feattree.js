@@ -1,5 +1,5 @@
 import { Button, ScrollBox } from '@pixi/ui';
-import { Application as PixiApp, Graphics, TilingSprite, Text, NineSliceSprite, Sprite, ColorMatrixFilter, Container, Assets, Texture } from 'pixi.js';
+import { Application as PixiApp, Graphics, TilingSprite, Text, NineSliceSprite, Sprite, ColorMatrixFilter, Container, Assets, Texture, HTMLText } from 'pixi.js';
 
 window.game.feattree = null;
 
@@ -21,6 +21,7 @@ class FeatTreeApplication extends Application {
     _actor;
     pixiApp;
     container;
+    detailPane;
 
     constructor(actor, options = {}) {
         super(options);
@@ -52,7 +53,7 @@ class FeatTreeApplication extends Application {
             top: 0,
             width: 1024,
             height: 700,
-            resizable: true,
+            resizable: false,
             minimizable: true
         }
     }
@@ -132,96 +133,210 @@ class FeatTreeApplication extends Application {
 
             let actorClassFeatures = this.actor.feats.find(x => x.id == "classfeature").feats;
             let treeItems = Object.values(this.actor.class.system.items).map(x => {
+                let id = x.uuid.split('.')[x.uuid.split('.').length - 1];
                 return {
-                    name: x.name.replace("(Choice) ", ""),
+                    name: x.name.replace(/\(.+?\)/, ""),
                     img: x.img,
-                    active: !!actorClassFeatures.find(cf => cf.feat.name == x.name.replace("(Choice) ", "")),
-                    level: x.level
+                    active: !!actorClassFeatures.find(cf => cf.feat.name.replace(/\(.+?\)/, "").trim() == x.name.replace(/\(.+?\)/, "").trim()),
+                    level: x.level,
+                    id: id
                 }
             });
             // Loop through features
-            let featDOs = treeItems.sort((a, b) => a.level - b.level).map(async (item) => {
-
-                let featContainer = new Container();
-
-                let chromeImgPath = item.active ? '/modules/pf2e-feattree-local/imgs/iconbg9s.webp' : '/modules/pf2e-feattree-local/imgs/iconbg_inactive9s.webp';
-                await Assets.load(chromeImgPath);
-                let iconChrome = new NineSliceSprite(Texture.from(chromeImgPath), 13, 13, 13, 13);
-                if (!item.active) {
-                    iconChrome.tint = 0x999999;
-                }
-                iconChrome.width = 50;
-                iconChrome.height = 50;
-
-                let nameChromeImgPath = item.active ? '/modules/pf2e-feattree-local/imgs/iconnamebg9s.webp' : '/modules/pf2e-feattree-local/imgs/iconname_inactivebg9s.webp';
-                await Assets.load(nameChromeImgPath);
-                let nameChrome = new NineSliceSprite(Texture.from(nameChromeImgPath), 8, 8, 8, 8);
-                if (!item.active) {
-                    nameChrome.tint = 0x999999;
-                }
-                nameChrome.y = 6;
-                nameChrome.x = 48;
-
-                let bg = new Sprite(Texture.WHITE);
-                bg.alpha = 0.5;
-                bg.y = 10;
-                bg.x = 48;
-
-                await Assets.load('/' + item.img);
-                let iconsprite = Sprite.from('/' + item.img);
-                iconsprite.x = 5;
-                iconsprite.y = 5;
-                iconsprite.width = 40;
-                iconsprite.height = 40;
-                if (!item.active) {
-                    let filter = new ColorMatrixFilter();
-                    iconsprite.filters = [filter];
-                    filter.desaturate();
-                }
-
-                let nameText = new Text({
-                    text: item.name,
+            let levelGroupedItems = {};
+            treeItems.sort((a, b) => a.level - b.level).forEach((featData) => {
+                if (!levelGroupedItems[featData.level]) { levelGroupedItems[featData.level] = []; }
+                levelGroupedItems[featData.level].push(featData);
+            });
+            let scrollItems = {};
+            let promises = Object.keys(levelGroupedItems).map(async (level) => {
+                scrollItems[level] = [];
+                
+                // Create level divide
+                let levelDivider = new Container();
+                let levelText = new Text({
+                    text: 'Level '+ level,
                     style: {
-                        fontFamily: 'Eczar',
-                        fontSize: 16,
-                        fill: item.active? 0x000000 : 0x333333,
+                        fontFamily: 'Vollkorn',
+                        fontSize: 18,
+                        fill: this.actor.actor.system.details.level.value >= level ? 0xFECD78 : 0xAAAAAA,
                         align: 'left'
                     },
                     x: 55,
-                    y: 16
+                    y: 0
+                });
+                levelDivider.addChild(levelText);
+                scrollItems[level].push(levelDivider);
+
+                let levelGroup = levelGroupedItems[level];
+                // Create feat DOs
+                let featDOs = levelGroup.map(async (item) => {
+                    let featContainer = new Container();
+
+                    let chromeImgPath = item.active ? '/modules/pf2e-feattree-local/imgs/iconbg9s.webp' : '/modules/pf2e-feattree-local/imgs/iconbg_inactive9s.webp';
+                    await Assets.load(chromeImgPath);
+                    let iconChrome = new NineSliceSprite(Texture.from(chromeImgPath), 13, 13, 13, 13);
+                    if (!item.active) {
+                        iconChrome.tint = 0x999999;
+                    }
+                    iconChrome.width = 50;
+                    iconChrome.height = 50;
+
+                    let nameChromeImgPath = item.active ? '/modules/pf2e-feattree-local/imgs/iconnamebg9s.webp' : '/modules/pf2e-feattree-local/imgs/iconname_inactivebg9s.webp';
+                    await Assets.load(nameChromeImgPath);
+                    let nameChrome = new NineSliceSprite(Texture.from(nameChromeImgPath), 8, 8, 8, 8);
+                    if (!item.active) {
+                        nameChrome.tint = 0x999999;
+                    }
+                    nameChrome.y = 6;
+                    nameChrome.x = 48;
+
+                    let bg = new Sprite(Texture.WHITE);
+                    bg.alpha = 0.5;
+                    bg.y = 10;
+                    bg.x = 48;
+
+                    await Assets.load('/' + item.img);
+                    let iconsprite = Sprite.from('/' + item.img);
+                    iconsprite.x = 5;
+                    iconsprite.y = 5;
+                    iconsprite.width = 40;
+                    iconsprite.height = 40;
+                    if (!item.active) {
+                        let filter = new ColorMatrixFilter();
+                        iconsprite.filters = [filter];
+                        filter.desaturate();
+                    }
+
+                    let nameText = new Text({
+                        text: item.name,
+                        style: {
+                            fontFamily: 'Eczar',
+                            fontSize: 16,
+                            fill: item.active ? 0x000000 : 0x333333,
+                            align: 'left'
+                        },
+                        x: 55,
+                        y: 16
+                    });
+
+                    bg.width = nameText.width + 15;
+                    bg.height = nameText.height + 12;
+                    nameChrome.width = bg.width + 5;
+                    nameChrome.height = bg.height + 8;
+
+                    featContainer.addChild(bg);
+                    featContainer.addChild(nameText);
+                    featContainer.addChild(iconsprite);
+                    featContainer.addChild(nameChrome);
+                    featContainer.addChild(iconChrome);
+
+                    const button = new Button(featContainer);
+                    button.onPress.connect(() => { this._setDetailPane(item.id); });
+
+                    return featContainer;
                 });
 
-                bg.width = nameText.width + 15;
-                bg.height = nameText.height + 12;
-                nameChrome.width = bg.width + 5;
-                nameChrome.height = bg.height + 8;
-
-                featContainer.addChild(bg);
-                featContainer.addChild(nameText);
-                featContainer.addChild(iconsprite);
-                featContainer.addChild(nameChrome);
-                featContainer.addChild(iconChrome);
-
-                return featContainer;
+                let fDOs = await Promise.all(featDOs);
+                scrollItems[level] = scrollItems[level].concat(fDOs);
             });
-            let scrollContainer = new Container({
-                x: 0,
-                y: 100,
-                width: this.pixiApp.renderer.width,
-                height: this.pixiApp.renderer.height - 100
-            });
+            await Promise.all(promises);
+
             let scrollbox = new ScrollBox({
                 elementsMargin: 6,
                 width: this.pixiApp.renderer.width,
                 height: this.pixiApp.renderer.height - 100,
                 vertPadding: 12,
                 horPadding: 12,
-                type: 'vertical'
+                type: 'vertical',
+                globalScroll: false
             });
-            let fDOs = await Promise.all(featDOs);
-            scrollbox.addItems(fDOs);
+            Object.keys(scrollItems).forEach((level) => scrollbox.addItems(scrollItems[level]));
+
+            let scrollContainer = new Container({
+                x: 0,
+                y: 100,
+                width: this.pixiApp.renderer.width - 300,
+                height: this.pixiApp.renderer.height - 100
+            });
             scrollContainer.addChild(scrollbox);
+
             this.pixiApp.stage.addChild(scrollContainer);
+
+            // detail box
+            await Assets.load("/modules/pf2e-feattree-local/imgs/detailbg9s.webp");
+            let detailBoxBorder = new NineSliceSprite(Texture.from("/modules/pf2e-feattree-local/imgs/detailbg9s.webp"), 13, 13, 13, 13);
+            detailBoxBorder.width = 300;
+            detailBoxBorder.height = this.pixiApp.renderer.height - 100;
+            detailBoxBorder.x = this.pixiApp.renderer.width - 300;
+            detailBoxBorder.y = 100;
+
+            this.pixiApp.stage.addChild(detailBoxBorder);
         }
+    }
+
+    async _setDetailPane(featId) {
+        if (this.detailPane) {
+            this.pixiApp.stage.removeChild(this.detailPane);
+            this.detailPane.destroy(true);
+            this.detailPane = null;
+        }
+        this.detailPane = new Container({
+            x: this.pixiApp.renderer.width - 300,
+            y: 100
+        });
+        let feat = await game.packs.get("pf2e.classfeatures").getDocument(featId);
+
+        let featTitle = new Text({
+            text: feat.name,
+            style: {
+                fontFamily: 'Eczar',
+                fontSize: 32,
+                fill: 0xFFFFFF,
+                align: 'center'
+            },
+            x: 150,
+            y: 20,
+            anchor: 0.5,
+            scale: 0.5
+        });
+
+        this.detailPane.addChild(featTitle);
+
+        let featDesc = new HTMLText({
+            text: feat.system.description.value,
+            style: {
+                fontFamily: 'Eczar',
+                fontSize: 32,
+                fill: 0xFFFFFF,
+                align: 'left',
+                wordWrap: true,
+                wordWrapWidth: 550
+            },
+            scale: 0.5
+        });
+
+        let scrollbox = new ScrollBox({
+            elementsMargin: 6,
+            width: 290,
+            height: this.pixiApp.renderer.height - 100,
+            vertPadding: 12,
+            horPadding: 12,
+            type: 'vertical',
+            globalScroll: false
+        });
+        scrollbox.addItem(featDesc);
+
+        let scrollContainer = new Container({
+            x: 0,
+            y: 40,
+            width: 280,
+            height: this.pixiApp.renderer.height - 100
+        });
+        scrollContainer.addChild(scrollbox);
+
+        this.detailPane.addChild(scrollContainer);
+
+        this.pixiApp.stage.addChild(this.detailPane);
     }
 }
