@@ -72,6 +72,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: npm install
+        run: npm install
+
+      - name: webpack build
+        run: npx webpack --config .\webpack.config.prod.js
 
       # Extract version embedded in the tag.
       # This step expects the tag to be one of the following formats:
@@ -83,6 +88,9 @@ jobs:
       - name: Extract Version From Tag
         id: get_version
         uses: battila7/get-version-action@v2
+
+      - name: Move module.prod.json to module.json
+        run: mv module.prod.json module.json
 
 
       # Modify "module.json" with values specific to the release.

@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  watch: true,
+  watch: false,
   devtool: "source-map",
   entry: './src/feattree.js',
   output: {
@@ -10,5 +10,5 @@ module.exports = {
     publicPath: '/modules/pf2e-feattree-local/scripts/',
     clean: true
   },
-  mode: 'development'
+  mode: 'production'
 };

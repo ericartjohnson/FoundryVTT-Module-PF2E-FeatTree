@@ -28,7 +28,7 @@
     "requires": []
   },
   "esmodules": [
-    "scripts/module.js"
+    "scripts/feattree.mjs"
   ],
   "scripts": [
   ],

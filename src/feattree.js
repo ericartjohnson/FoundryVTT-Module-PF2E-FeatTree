@@ -110,11 +110,12 @@ class FeatTreeApplication extends Application {
                 style: {
                     fill: 0xEEEEEE,
                     fontFamily: 'Eczar',
-                    fontSize: 50,
+                    fontSize: 100,
                     align: 'center'
                 },
                 x: 100,
-                y: 14
+                y: 14,
+                scale: 0.5
             });
             // this.pixiApp.stage.addChild(titleText);
 
@@ -135,14 +136,13 @@ class FeatTreeApplication extends Application {
             let treeItems = Object.values(this.actor.class.system.items).map(x => {
                 let id = x.uuid.split('.')[x.uuid.split('.').length - 1];
                 return {
-                    name: x.name.replace(/\(.+?\)/, ""),
+                    name: x.name,
                     img: x.img,
-                    active: !!actorClassFeatures.find(cf => cf.feat.name.replace(/\(.+?\)/, "").trim() == x.name.replace(/\(.+?\)/, "").trim()),
+                    active: !!actorClassFeatures.find(cf => cf.feat.sourceId == x.uuid),
                     level: x.level,
                     id: id
                 }
-            });
-            // Loop through features
+            });           // Loop through features
             let levelGroupedItems = {};
             treeItems.sort((a, b) => a.level - b.level).forEach((featData) => {
                 if (!levelGroupedItems[featData.level]) { levelGroupedItems[featData.level] = []; }
@@ -212,12 +212,13 @@ class FeatTreeApplication extends Application {
                         text: item.name,
                         style: {
                             fontFamily: 'Eczar',
-                            fontSize: 16,
+                            fontSize: 32,
                             fill: item.active ? 0x000000 : 0x333333,
                             align: 'left'
                         },
                         x: 55,
-                        y: 16
+                        y: 16,
+                        scale: 0.5
                     });
 
                     bg.width = nameText.width + 15;
