@@ -76,7 +76,7 @@ jobs:
         run: npm install
 
       - name: webpack build
-        run: npx webpack --config .\webpack.config.prod.js
+        run: npx webpack --config ./webpack.config.prod.js
 
       # Extract version embedded in the tag.
       # This step expects the tag to be one of the following formats:
