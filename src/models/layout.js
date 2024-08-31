@@ -6,11 +6,15 @@ export class Layout extends Container(){
     }
 
     _buildChildren(){
-        console.warn("_buildChildren not implemented in: ", this);
+        this.children.forEach(child => {
+            child._buildChildren?.();
+        });
     }
 
     _layoutChildren(){
-        console.warn("_layoutChildren not implemented in: ", this);
+        this.children.forEach(child => {
+            child._layoutChildren?.();
+        });
     }
 
 }

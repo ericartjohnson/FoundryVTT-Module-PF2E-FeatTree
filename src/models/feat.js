@@ -81,6 +81,8 @@ export class Feat extends Layout {
         this.addChild(this.iconChrome);
 
         this.button = new Button(this);
+
+        super._buildChildren();
     }
 
     async _layoutChildren() {
@@ -106,5 +108,7 @@ export class Feat extends Layout {
         this.nameChrome.x = 48;
         this.nameChrome.width = this.colorBg.width + 5;
         this.nameChrome.height = this.colorBg.height + 8;
+
+        super._layoutChildren();
     }
 }
