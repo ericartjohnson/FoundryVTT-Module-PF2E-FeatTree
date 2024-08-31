@@ -1,6 +1,6 @@
 import { Button, ScrollBox } from '@pixi/ui';
 import { Application as PixiApp, TilingSprite, Text, NineSliceSprite, Sprite, Container, Assets, Texture, HTMLText } from 'pixi.js';
-import { Feat, FeatData } from './models';
+import { AppLayout, Feat, FeatData } from './models';
 
 window.game.feattree = null;
 
@@ -96,6 +96,10 @@ class FeatTreeApplication extends Application {
     async _reset() {
         if (this.pixiApp?.stage) {
             this.pixiApp.stage.removeChildren();
+            let appLayout = new AppLayout();
+            await appLayout.init();
+            this.pixiApp.stage.addChild(appLayout);
+            
             await Assets.load('/modules/pf2e-feattree-local/imgs/windowtilebg.webp');
             let windowbg = TilingSprite.from('/modules/pf2e-feattree-local/imgs/windowtilebg.webp', { width: 16, height: 16 });
             windowbg.width = this.pixiApp.renderer.width;

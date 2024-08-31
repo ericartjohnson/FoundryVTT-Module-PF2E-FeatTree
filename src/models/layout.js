@@ -5,6 +5,14 @@ export class Layout extends Container(){
         super();
     }
 
+    initialized = false;
+
+    async init(){
+        if (this.initialized) return;
+        await this._buildChildren();
+        await this._layoutChildren();
+    }
+
     _buildChildren(){
         this.children.forEach(child => {
             child._buildChildren?.();

@@ -31,13 +31,6 @@ export class Feat extends Layout {
         icon: () => '/' + this.featData.imageUrl
     }
 
-    async init() {
-        if (this.initialized) return;
-        await this._buildChildren();
-        await this._layoutChildren();
-        this.initialized = true;
-    }
-
     async _buildChildren() {
         await Assets.load(Object.values(this._static_images));
         await Assets.load(this._dynamic_images.icon());
