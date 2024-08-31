@@ -1,5 +1,6 @@
 import { Button, ScrollBox } from '@pixi/ui';
-import { Application as PixiApp, Graphics, TilingSprite, Text, NineSliceSprite, Sprite, ColorMatrixFilter, Container, Assets, Texture, HTMLText } from 'pixi.js';
+import { Application as PixiApp, TilingSprite, Text, NineSliceSprite, Sprite, Container, Assets, Texture, HTMLText } from 'pixi.js';
+import { Feat, FeatData } from './models';
 
 window.game.feattree = null;
 
@@ -33,9 +34,8 @@ class FeatTreeApplication extends Application {
     }
 
     set actor(newActor) {
-        window.testActor = newActor;
+        window.feattreeActor = newActor;
         this._actor = newActor;
-        console.log(this._actor);
         this._reset();
     }
 
@@ -131,17 +131,15 @@ class FeatTreeApplication extends Application {
             actorImage.y = 24;
             this.pixiApp.stage.addChild(actorImage);
 
-
             let actorClassFeatures = this.actor.feats.find(x => x.id == "classfeature").feats;
             let treeItems = Object.values(this.actor.class.system.items).map(x => {
-                let id = x.uuid.split('.')[x.uuid.split('.').length - 1];
-                return {
-                    name: x.name,
-                    img: x.img,
-                    active: !!actorClassFeatures.find(cf => cf.feat.sourceId == x.uuid),
+                return new FeatData({
+                    displayName: x.name,
+                    imageUrl: x.img,
+                    isActive: !!actorClassFeatures.find(cf => cf.feat.sourceId == x.uuid),
                     level: x.level,
-                    id: id
-                }
+                    uuid: x.uuid
+                });
             });           // Loop through features
             let levelGroupedItems = {};
             treeItems.sort((a, b) => a.level - b.level).forEach((featData) => {
@@ -171,71 +169,10 @@ class FeatTreeApplication extends Application {
                 let levelGroup = levelGroupedItems[level];
                 // Create feat DOs
                 let featDOs = levelGroup.map(async (item) => {
-                    let featContainer = new Container();
-
-                    let chromeImgPath = item.active ? '/modules/pf2e-feattree-local/imgs/iconbg9s.webp' : '/modules/pf2e-feattree-local/imgs/iconbg_inactive9s.webp';
-                    await Assets.load(chromeImgPath);
-                    let iconChrome = new NineSliceSprite(Texture.from(chromeImgPath), 13, 13, 13, 13);
-                    if (!item.active) {
-                        iconChrome.tint = 0x999999;
-                    }
-                    iconChrome.width = 50;
-                    iconChrome.height = 50;
-
-                    let nameChromeImgPath = item.active ? '/modules/pf2e-feattree-local/imgs/iconnamebg9s.webp' : '/modules/pf2e-feattree-local/imgs/iconname_inactivebg9s.webp';
-                    await Assets.load(nameChromeImgPath);
-                    let nameChrome = new NineSliceSprite(Texture.from(nameChromeImgPath), 8, 8, 8, 8);
-                    if (!item.active) {
-                        nameChrome.tint = 0x999999;
-                    }
-                    nameChrome.y = 6;
-                    nameChrome.x = 48;
-
-                    let bg = new Sprite(Texture.WHITE);
-                    bg.alpha = 0.5;
-                    bg.y = 10;
-                    bg.x = 48;
-
-                    await Assets.load('/' + item.img);
-                    let iconsprite = Sprite.from('/' + item.img);
-                    iconsprite.x = 5;
-                    iconsprite.y = 5;
-                    iconsprite.width = 40;
-                    iconsprite.height = 40;
-                    if (!item.active) {
-                        let filter = new ColorMatrixFilter();
-                        iconsprite.filters = [filter];
-                        filter.desaturate();
-                    }
-
-                    let nameText = new Text({
-                        text: item.name,
-                        style: {
-                            fontFamily: 'Eczar',
-                            fontSize: 32,
-                            fill: item.active ? 0x000000 : 0x333333,
-                            align: 'left'
-                        },
-                        x: 55,
-                        y: 16,
-                        scale: 0.5
-                    });
-
-                    bg.width = nameText.width + 15;
-                    bg.height = nameText.height + 12;
-                    nameChrome.width = bg.width + 5;
-                    nameChrome.height = bg.height + 8;
-
-                    featContainer.addChild(bg);
-                    featContainer.addChild(nameText);
-                    featContainer.addChild(iconsprite);
-                    featContainer.addChild(nameChrome);
-                    featContainer.addChild(iconChrome);
-
-                    const button = new Button(featContainer);
-                    button.onPress.connect(() => { this._setDetailPane(item.id); });
-
-                    return featContainer;
+                    let f = new Feat(item);
+                    await f.init();
+                    f.button.onPress.connect(() => this._setDetailPane(f.featData.id));
+                    return f;
                 });
 
                 let fDOs = await Promise.all(featDOs);
